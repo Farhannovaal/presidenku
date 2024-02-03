@@ -9,24 +9,23 @@
 <body>
     <h2>Halo Selamat Datang Calon Presiden Ku</h2>
 
-    <h3>Calon Presiden:</h3>
-    @foreach ($data['calon_presiden'] as $calonPresiden)
+    @foreach ($data as $userData)
+        <h3>Calon Presiden:</h3>
         <p>
-            <strong>Nomor Urut:</strong> {{ $calonPresiden['nomor_urut'] }}<br>
-            <strong>Nama Lengkap:</strong> {{ $calonPresiden['nama_lengkap'] }}<br>
-            <strong>Tempat Tanggal Lahir:</strong> {{ $calonPresiden['tempat_tanggal_lahir'] }}<br>
-            <strong>Karir:</strong> {{ implode(", ", $calonPresiden['karir']) }}
-        </p>
-        <hr>
-    @endforeach
+            <strong>Nomor Urut:</strong> {{ $userData->nomorUrut }}<br>
+            <strong>Nama Lengkap:</strong> {{ $userData->namaLengkap }}<br>
+            <strong>Tempat Tanggal Lahir:</strong> {{ $userData->tempatTanggalLahir }}<br>
 
-    <h3>Calon Wakil Presiden:</h3>
-    @foreach ($data['calon_wakil_presiden'] as $calonWakil)
-        <p>
-            <strong>Nomor Urut:</strong> {{ $calonWakil['nomor_urut'] }}<br>
-            <strong>Nama Lengkap:</strong> {{ $calonWakil['nama_lengkap'] }}<br>
-            <strong>Tempat Tanggal Lahir:</strong> {{ $calonWakil['tempat_tanggal_lahir'] }}<br>
-            <strong>Karir:</strong> {{ implode(", ", $calonWakil['karir']) }}
+            @if (property_exists($userData, 'karirData'))
+                <strong>Karir:</strong>
+                @foreach ($userData->karirData as $karir)
+                    <p>
+                        <strong>Jabatan:</strong> {{ $karir->jabatan }}<br>
+                        <strong>Tahun Mulai:</strong> {{ $karir->tahunMulai }}<br>
+                        <strong>Tahun Selesai:</strong> {{ $karir->tahunSelesai ?? 'Sekarang' }}<br>
+                    </p>
+                @endforeach
+            @endif
         </p>
         <hr>
     @endforeach
