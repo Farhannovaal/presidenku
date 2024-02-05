@@ -73,7 +73,7 @@ class getDataController extends Controller
 
     public function index()
     {
-        $responseApi = $this->apiService->getDataFromApi()->json();
+        $responseApi = $this->apiService->getDataFromApi();
         $presidenDataArray = [];
         foreach ($responseApi['calon_presiden'] as $dataCalon) {
             $karirDataArray = array_map(function ($karir) {

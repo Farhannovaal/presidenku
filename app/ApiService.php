@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class ApiService
 {
@@ -10,6 +11,14 @@ class ApiService
 
     public function getDataFromApi()
     {
-        return Http::get($this->apiUrl);
+        $response = Http::get($this->apiUrl);
+
+        if ($response->successful()) {
+            return $response->json();
+        } else {
+            Log::warning('Failed to fetch data from the API. HTTP status code: '.$response->status());
+
+            return null;
+        }
     }
 }
