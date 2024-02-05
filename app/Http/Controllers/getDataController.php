@@ -7,28 +7,52 @@ use App\ApiService;
 class UserDataDto
 {
     public $nomorUrut;
+
     public $namaLengkap;
+
     public $tempatTanggalLahir;
+
     public $karirData;
+
+    public $umur;
 
     public function __construct(
         int $nomorUrut,
         string $namaLengkap,
         string $tempatTanggalLahir,
-        array $karirData 
+        array $karirData
     ) {
         $this->nomorUrut = $nomorUrut;
         $this->namaLengkap = $namaLengkap;
         $this->tempatTanggalLahir = $tempatTanggalLahir;
-        $this->karirData = $karirData; 
+        $this->karirData = $karirData;
+        $this->umur = self::hitungUmur($tempatTanggalLahir);
+    }
+
+    private static function hitungUmur($tanggalLahir)
+    {
+        $tahunLahir = date('Y', strtotime($tanggalLahir));
+        $tahunSekarang = date('Y');
+        $umur = $tahunSekarang - $tahunLahir;
+
+        // Check apakah sudah ulang tahun atau belum pada tahun ini
+        $bulanLahir = date('m', strtotime($tanggalLahir));
+        $bulanSekarang = date('m');
+
+        if ($bulanSekarang < $bulanLahir || ($bulanSekarang == $bulanLahir && date('d') < date('d', strtotime($tanggalLahir)))) {
+            $umur--;
+        }
+
+        return $umur;
     }
 }
-
 
 class KarirData
 {
     public string $jabatan;
+
     public int $tahunMulai;
+
     public ?int $tahunSelesai;
 
     public function __construct(string $jabatan, int $tahunMulai, ?int $tahunSelesai)
@@ -58,6 +82,7 @@ class getDataController extends Controller
                 $tahun = explode(' dan ', $karirParts[1] ?? '');
                 $tahunMulai = intval(substr($tahun[0], 0, 4)) ?? '';
                 $tahunSelesai = isset($karirParts[1]) ? intval(substr($karirParts[1], 5, 9)) : null;
+
                 return new KarirData($jabatan, $tahunMulai, $tahunSelesai);
             }, $dataCalon['karir']);
 
@@ -78,6 +103,7 @@ class getDataController extends Controller
                 $tahunWakil = explode(' dan ', $karirPartsWakil[1] ?? '');
                 $tahunMulaiWakil = intval(substr($tahunWakil[0], 0, 4)) ?? '';
                 $tahunSelesaiWakil = isset($karirPartsWakil[1]) ? intval(substr($karirPartsWakil[1], 5, 9)) : null;
+
                 return new KarirData($jabatanWakil, $tahunMulaiWakil, $tahunSelesaiWakil);
             }, $dataWakilPresiden['karir']);
 
@@ -90,10 +116,9 @@ class getDataController extends Controller
 
             $wakilPresidenDataArray[] = $wakilPresidenData;
         }
-        $dataCalon = array_merge($presidenDataArray, $wakilPresidenDataArray);
-        $dataCalon = collect($dataCalon)->sortBy('nomorUrut')->values()->all();
+        $dataCalon = collect([...$presidenDataArray, ...$wakilPresidenDataArray])->sortBy('nomorUrut')->values()->all();
 
+        // dd($dataCalon);
         return view('home', ['data' => $dataCalon]);
     }
 }
-

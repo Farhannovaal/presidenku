@@ -16,6 +16,7 @@
                 <p>
                     <strong>Nama Lengkap:</strong> {{ $userData->namaLengkap }}<br>
                     <strong>Tempat Tanggal Lahir:</strong> {{ $userData->tempatTanggalLahir }}<br>
+                    <strong>Umur:</strong> {{ $userData->umur }}<br>
 
                     @if (property_exists($userData, 'karirData'))
                         <strong>Karir:</strong>
