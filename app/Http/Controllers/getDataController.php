@@ -3,65 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\ApiService;
+use App\Http\Controllers\KarirData;
+use App\Http\Controllers\UserDataDto;
 
-class UserDataDto
-{
-    public $nomorUrut;
 
-    public $namaLengkap;
-
-    public $tempatTanggalLahir;
-
-    public $karirData;
-
-    public $umur;
-
-    public function __construct(
-        int $nomorUrut,
-        string $namaLengkap,
-        string $tempatTanggalLahir,
-        array $karirData
-    ) {
-        $this->nomorUrut = $nomorUrut;
-        $this->namaLengkap = $namaLengkap;
-        $this->tempatTanggalLahir = $tempatTanggalLahir;
-        $this->karirData = $karirData;
-        $this->umur = self::hitungUmur($tempatTanggalLahir);
-    }
-
-    private static function hitungUmur($tanggalLahir)
-    {
-        $tahunLahir = date('Y', strtotime($tanggalLahir));
-        $tahunSekarang = date('Y');
-        $umur = $tahunSekarang - $tahunLahir;
-
-        // Check apakah sudah ulang tahun atau belum pada tahun ini
-        $bulanLahir = date('m', strtotime($tanggalLahir));
-        $bulanSekarang = date('m');
-
-        if ($bulanSekarang < $bulanLahir || ($bulanSekarang == $bulanLahir && date('d') < date('d', strtotime($tanggalLahir)))) {
-            $umur--;
-        }
-
-        return $umur;
-    }
-}
-
-class KarirData
-{
-    public string $jabatan;
-
-    public int $tahunMulai;
-
-    public ?int $tahunSelesai;
-
-    public function __construct(string $jabatan, int $tahunMulai, ?int $tahunSelesai)
-    {
-        $this->jabatan = $jabatan;
-        $this->tahunMulai = $tahunMulai;
-        $this->tahunSelesai = $tahunSelesai;
-    }
-}
 class getDataController extends Controller
 {
     private $apiService;
@@ -86,7 +31,7 @@ class getDataController extends Controller
                 return new KarirData($jabatan, $tahunMulai, $tahunSelesai);
             }, $dataCalon['karir']);
 
-            $dataPresiden = new UserDataDto(
+            $dataPresiden = new UserDto(
                 $dataCalon['nomor_urut'],
                 $dataCalon['nama_lengkap'],
                 $dataCalon['tempat_tanggal_lahir'],
@@ -107,7 +52,7 @@ class getDataController extends Controller
                 return new KarirData($jabatanWakil, $tahunMulaiWakil, $tahunSelesaiWakil);
             }, $dataWakilPresiden['karir']);
 
-            $wakilPresidenData = new UserDataDto(
+            $wakilPresidenData = new UserDto(
                 $dataWakilPresiden['nomor_urut'],
                 $dataWakilPresiden['nama_lengkap'],
                 $dataWakilPresiden['tempat_tanggal_lahir'],

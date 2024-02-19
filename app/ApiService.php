@@ -17,7 +17,6 @@ class ApiService
             return $response->json();
         } else {
             Log::warning('Failed to fetch data from the API. HTTP status code: '.$response->status());
-
             return null;
         }
     }
